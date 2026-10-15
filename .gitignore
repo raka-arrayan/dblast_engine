@@ -1,0 +1,12 @@
+# Abaikan folder virtual environment, log, file rahasia, dan kredensial GCP
+venv_clean/
+logs/
+airflow.db
+airflow.cfg
+__pycache__/
+gcp_key.json
+.gcloud_adc.json
+processed_tasks.txt
+*.env
+dist/
+build/

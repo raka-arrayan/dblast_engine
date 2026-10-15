@@ -1,0 +1,27 @@
+services:
+  airflow:
+    image: apache/airflow:2.8.1-python3.11
+    container_name: dblast-airflow
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: 'Asia/Jakarta'
+      AIRFLOW__CORE__DEFAULT_TIMEZONE: 'Asia/Jakarta'
+      AIRFLOW__WEBSERVER__DEFAULT_UI_TIMEZONE: 'Asia/Jakarta'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: 'airflow'
+      _AIRFLOW_WWW_USER_PASSWORD: 'airflow'
+      _AIRFLOW_WWW_USER_FIRSTNAME: 'Admin'
+      _AIRFLOW_WWW_USER_LASTNAME: 'User'
+      _AIRFLOW_WWW_USER_ROLE: 'Admin'
+      _AIRFLOW_WWW_USER_EMAIL: 'admin@example.com'
+      _PIP_ADDITIONAL_REQUIREMENTS: 'openpyxl pillow google-cloud-bigquery python-dotenv requests'
+      GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/dblast/.gcloud_adc.json
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./:/opt/airflow/dblast
+    command: standalone
