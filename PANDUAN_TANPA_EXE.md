@@ -395,36 +395,6 @@ Contoh aturan praktis:
 - Jika nama kustom tidak diperlukan, isi `custom_tableau_name` atau
   `custom_local_name` dengan string kosong.
 
-### Contoh input dalam format CSV
-
-Request juga dapat disiapkan sebagai file CSV, lalu diunggah ke tabel
-BigQuery. Contoh berikut mengikuti format kolom tabel `dblast_queue`:
-
-```csv
-id,output_option,report_key,workbook_url,local_file_path,custom_tableau_name,custom_local_name,filter_params,email_to,email_cc,email_bcc,email_subject,status,created_at
-3edfb27d-345e-4447-8a47-1676da6ad1ec,4,US_Flight_Report,US_17679270950870/Dashboard1,,Laporan_US_Flight_Food_Business,,"{""Pick a metric"": ""Food"", ""Traveller Type"": ""Business""}",rakaarrayan27@gmail.com,,,Dash Blast,PENDING,2026-10-15T03:41:44.208463+00:00
-e6b6e409-a2fb-44b0-871e-e69a002fdc1a,1,Test2,US_17679270950870/Dashboard1,,,,"{""Pick a metric"": ""Food""}",rakaarrayan27@gmail.com,,,Test2,PENDING,2026-10-15T07:15:31.118444+00:00
-```
-
-Penjelasan contoh:
-
-- Baris pertama menggunakan opsi `4`, sehingga `workbook_url` wajib diisi
-  dan menghasilkan gambar, Excel, serta PDF. Karena memakai dua filter,
-  `filter_params` berisi dua pasangan JSON.
-- Baris kedua menggunakan opsi `1`, sehingga hanya gambar dashboard yang
-  dikirim. Kolom file lokal dan nama attachment lokal dikosongkan.
-- Pada CSV, tanda kutip JSON harus digandakan. JSON:
-  `{"Pick a metric":"Food"}` ditulis sebagai
-  `"{""Pick a metric"":""Food""}"` agar koma dan tanda kutipnya tetap
-  dianggap sebagai satu nilai CSV.
-- Jika tidak ada filter, tulis nilai CSV `"{}"` atau `{}` sesuai aplikasi
-  CSV yang digunakan.
-- Setiap baris harus memiliki `id` unik dan `status` `PENDING`.
-
-Saat menggunakan CSV, pastikan urutan dan nama kolom cocok dengan skema tabel
-BigQuery. Untuk input satu atau beberapa row, pengisian melalui BigQuery
-Console biasanya lebih mudah dikontrol daripada mengunggah seluruh file.
-
 ### Arti `output_option`
 
 | Opsi | Output |
