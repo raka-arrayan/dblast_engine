@@ -1,4 +1,4 @@
-# Dokumentasi Lengkap & Panduan Operasional Sistem DBlast
+# Panduan Lengkap DBlast dengan `.exe`
 *(Automated Tableau Dashboard & Email Blasting System)*
 
 ---

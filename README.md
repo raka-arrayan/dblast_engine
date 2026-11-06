@@ -13,65 +13,41 @@
 
 ---
 
-## 🏗️ Tiga Pilar Arsitektur
+## 🏗️ Pilihan Arsitektur Input
 
 ```mermaid
 flowchart LR
-    A["1. Client (.exe)"] -->|Antrian: status PENDING| B[("2. Google BigQuery")]
-    B -->|Fetch Tiap 7 Menit| C["3. Airflow & Engine (Docker)"]
-    C -->|Render & Export| D["Tableau Server"]
-    C -->|Kirim Email + Lampiran| E["SMTP Gateway (Gmail / Relay)"]
-    E -->|Blast Laporan| F["Inbox Penerima"]
+    A["Pilihan 1: User menjalankan<br/>dblast_client.exe"] -->|Membuat request| C[("Google BigQuery<br/>status PENDING")]
+    B["Pilihan 2: Operator input<br/>langsung ke BigQuery"] -->|Membuat request| C
+    C -->|Fetch tiap 7 menit| D["Airflow & Engine<br/>(Docker)"]
+    D -->|Render & Export| E["Tableau Server"]
+    D -->|Kirim Email + Lampiran| F["SMTP Gateway (Gmail / Relay)"]
+    F -->|Blast Laporan| G["Inbox Penerima"]
 ```
 
----
+DBlast menyediakan dua pilihan untuk memasukkan request:
 
-## ⚡ Quick Start
+1. **Menggunakan `dblast_client.exe`**: user mengisi form interaktif. Client
+   kemudian membuat row request di BigQuery dengan `status = PENDING`.
+2. **Input langsung ke BigQuery**: operator membuat row request secara manual
+   di tabel BigQuery dengan `status = PENDING`, tanpa menjalankan client atau
+   `.exe`.
 
-### 1. Prasyarat
-* Python 3.11+
-* Docker Desktop & Docker Compose
-* Akun Google Cloud (BigQuery) & Kredensial SMTP
-
-### 2. Setup Virtual Environment & Library
-```bash
-# Buat & aktifkan virtual environment
-python -m venv venv
-venv\Scripts\activate
-
-# Install dependensi yang dibutuhkan
-pip install google-cloud-bigquery openpyxl pillow python-dotenv requests pyinstaller
-```
-
-### 3. Menjalankan Server Backend (Airflow)
-```bash
-docker compose up -d
-```
-* **Airflow Web UI:** `http://localhost:8080`
-* **Username / Password:** `airflow` / `airflow`
-* **Timezone:** `Asia/Jakarta (WIB)`
-* Pastikan DAG `dblast_automation_pipeline` dalam keadaan **ON (Unpaused)**.
-
-### 4. Menjalankan / Mengompilasi Client (.exe)
-* **Jalankan script langsung:**
-  ```bash
-  python dblast_client.py
-  ```
-* **Kompilasi menjadi file `.exe` mandiri untuk disebar ke pengguna:**
-  ```bash
-  pyinstaller --onefile dblast_client.py
-  ```
-  *(File hasil kompilasi akan berada di folder `dist/dblast_client.exe`)*
-
----
+Setelah request masuk ke BigQuery, kedua pilihan tersebut memakai alur backend
+yang sama. Airflow di dalam Docker menjalankan DAG setiap 7 menit, lalu DAG
+memanggil `dblast_engine.py` untuk mengambil dan memproses request.
 
 ## 📚 Dokumentasi Rinci
-Untuk mempelajari panduan operasional dan arsitektur lebih mendalam, silakan baca berkas dokumentasi berikut:
-* **[DOKUMENTASI.md](DOKUMENTASI.md)**: Panduan instalasi lengkap, penjelasan `venv`, tabel antrian BigQuery, alur 11 tahapan operasional, dan manual penggunaan (opsi 1–9).
-* **[PENJELASAN_4_FILE_UTAMA_DBLAST.md](PENJELASAN_4_FILE_UTAMA_DBLAST.md)**: Bedah baris kode dan fungsi dari `dblast_client.py`, `dblast_engine.py`, `dags/dblast_dag.py`, dan `docker-compose.yaml`.
+Untuk mempelajari panduan operasional dan arsitektur lebih mendalam, silakan
+baca dokumentasi berikut:
+
+* **[PANDUAN_LENGKAP_DBLAST_DENGAN_EXE.md](PANDUAN_LENGKAP_DBLAST_DENGAN_EXE.md)**:
+  Panduan lengkap untuk alur yang menggunakan `dblast_client.py` atau
+  `dblast_client.exe` sebagai interface input.
+* **[PANDUAN_TANPA_EXE.md](PANDUAN_TANPA_EXE.md)**:
+  Panduan lengkap untuk alur utama dengan input request langsung ke BigQuery,
+  tanpa menggunakan `.exe`.
+* **[PENJELASAN_4_FILE_UTAMA_DBLAST.md](PENJELASAN_4_FILE_UTAMA_DBLAST.md)**:
+  Penjelasan fungsi dan alur file utama DBlast.
 
 ---
-
-## 👤 Pemilik Proyek
-* **Pengembang**: Raka Arrayan Muttaqien
-* **Organisasi**: MIS & Business Finance Group, PT Bank CIMB Niaga Tbk.
